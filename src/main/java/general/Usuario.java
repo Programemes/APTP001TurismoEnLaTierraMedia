@@ -29,4 +29,7 @@ public class Usuario {
     }
 
 
+    public boolean recibirItinerario(Itinerario itinerario) {
+        return false;
+    }
 }

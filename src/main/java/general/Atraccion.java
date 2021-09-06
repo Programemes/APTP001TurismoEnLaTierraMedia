@@ -1,6 +1,6 @@
 package general;
 
-public class Atraccion {
+public class Atraccion implements Comparable<Atraccion>{
     private String nombre;
     private int costo;
     private double tiempo;
@@ -60,5 +60,13 @@ public class Atraccion {
     @Override
     public String toString() {
         return "Atraccion[" + "nombre: " + nombre + ", costo: " + costo + ", tiempo: " + tiempo + ", cupo: " + cupo + ", tipo: " + tipo + ']';
+    }
+
+    @Override
+    public int compareTo(Atraccion atraccion) {
+        if (this.costo == atraccion.getCosto()){
+            return Double.compare(this.tiempo, atraccion.getTiempo());
+        }
+        return Integer.compare(this.costo, atraccion.getCosto());
     }
 }
