@@ -1,5 +1,7 @@
 package general;
 
+import java.util.Objects;
+
 public class Atraccion implements Comparable<Atraccion>{
     private String nombre;
     private int costo;
@@ -19,8 +21,6 @@ public class Atraccion implements Comparable<Atraccion>{
         return nombre;
     }
 
-
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -37,16 +37,8 @@ public class Atraccion implements Comparable<Atraccion>{
         return tiempo;
     }
 
-    public void setTiempo(double tiempo) {
-        this.tiempo = tiempo;
-    }
-
     public int getCupo() {
         return cupo;
-    }
-
-    public void setCupo(int cupo) {
-        this.cupo = cupo;
     }
 
     public ENUMTIPO getTipo() {
@@ -59,7 +51,7 @@ public class Atraccion implements Comparable<Atraccion>{
 
     @Override
     public String toString() {
-        return "Atraccion[" + "nombre: " + nombre + ", costo: " + costo + ", tiempo: " + tiempo + ", cupo: " + cupo + ", tipo: " + tipo + ']';
+        return "Atraccion[" + "nombre: " + nombre + ", costo: " + costo + ", tiempo: " + tiempo + ", cupo: " + cupo + ", tipo: " + tipo + "]\n";
     }
 
     @Override
@@ -68,5 +60,18 @@ public class Atraccion implements Comparable<Atraccion>{
             return Double.compare(this.tiempo, atraccion.getTiempo());
         }
         return Integer.compare(this.costo, atraccion.getCosto());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Atraccion atraccion = (Atraccion) o;
+        return costo == atraccion.costo && Double.compare(atraccion.tiempo, tiempo) == 0 && cupo == atraccion.cupo && Objects.equals(nombre, atraccion.nombre) && tipo == atraccion.tipo;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombre, costo, tiempo, cupo, tipo);
     }
 }

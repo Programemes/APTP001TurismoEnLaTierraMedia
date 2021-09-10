@@ -2,27 +2,15 @@ package promociones;
 
 import general.Atraccion;
 
-public class PromocionPorcentaje implements Promocion{
+public class PromocionPorcentaje extends Promocion implements IPromocion {
     private final double porcentaje;
-    private final Atraccion atraccionA;
-    private final Atraccion atraccionB;
 
-    public PromocionPorcentaje(Atraccion atraccionA, Atraccion atraccionB, double porcentaje) {
-        this.atraccionA = atraccionA;
-        this.atraccionB = atraccionB;
+    public PromocionPorcentaje(Atraccion atraccionA, Atraccion atraccionB, double porcentaje) throws Exception {
+        super(atraccionA, atraccionB);
+        if (porcentaje >= 100){
+            throw new Exception("La promocion da un costo igual o superior a la suma del valor de las atracciones");
+        }
         this.porcentaje = porcentaje;
-    }
-
-    public Atraccion getAtraccionA() {
-        return atraccionA;
-    }
-
-    public Atraccion getAtraccionB() {
-        return atraccionB;
-    }
-
-    public double getPorcentaje() {
-        return porcentaje;
     }
 
     @Override

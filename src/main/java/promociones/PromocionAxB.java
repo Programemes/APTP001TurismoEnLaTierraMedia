@@ -2,23 +2,12 @@ package promociones;
 
 import general.Atraccion;
 
-public class PromocionAxB implements Promocion{
-    private final Atraccion atraccionA;
-    private final Atraccion atraccionB;
+public class PromocionAxB extends Promocion implements IPromocion {
     private final Atraccion atraccionRegalo;
 
     public PromocionAxB(Atraccion atraccionA, Atraccion atraccionB, Atraccion atraccionRegalo) {
-        this.atraccionA = atraccionA;
-        this.atraccionB = atraccionB;
+        super(atraccionA, atraccionB);
         this.atraccionRegalo = atraccionRegalo;
-    }
-
-    public Atraccion getAtraccionA() {
-        return atraccionA;
-    }
-
-    public Atraccion getAtraccionB() {
-        return atraccionB;
     }
 
     @Override

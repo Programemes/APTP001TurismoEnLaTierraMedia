@@ -2,23 +2,15 @@ package promociones;
 
 import general.Atraccion;
 
-public class PromocionAbsoluta implements Promocion{
+public class PromocionAbsoluta extends Promocion implements IPromocion {
     private final int precioFinal;
-    private final Atraccion atraccionA;
-    private final Atraccion atraccionB;
 
-    public PromocionAbsoluta(Atraccion atraccionA, Atraccion atraccionB, int precioFinal) {
-        this.atraccionA = atraccionA;
-        this.atraccionB = atraccionB;
+    public PromocionAbsoluta(Atraccion atraccionA, Atraccion atraccionB, int precioFinal) throws Exception {
+        super(atraccionA, atraccionB);
+        if (precioFinal >= atraccionA.getCosto() + atraccionB.getCosto()){
+            throw new Exception("La promocion da un costo igual o superior a la suma del valor de las atracciones");
+        }
         this.precioFinal = precioFinal;
-    }
-
-    public Atraccion getAtraccionA() {
-        return atraccionA;
-    }
-
-    public Atraccion getAtraccionB() {
-        return atraccionB;
     }
 
     @Override

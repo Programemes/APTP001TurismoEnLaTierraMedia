@@ -8,4 +8,12 @@ public class Itinerario{
         this.atracciones = atracciones;
         this.total = total;
     }
+
+    public Atraccion[] getAtracciones() {
+        return atracciones;
+    }
+
+    public int getTotal() {
+        return total;
+    }
 }
