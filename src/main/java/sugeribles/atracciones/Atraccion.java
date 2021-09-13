@@ -1,12 +1,12 @@
-package general;
+package sugeribles.atracciones;
 
 import java.util.Objects;
 
-public class Atraccion implements Comparable<Atraccion>{
+public class Atraccion implements Comparable<Atraccion> {
     private String nombre;
     private int costo;
-    private double tiempo;
-    private int cupo;
+    private final double tiempo;
+    private final int cupo;
     private ENUMTIPO tipo;
 
     public Atraccion(String nombre, int costo, double tiempo, int cupo, ENUMTIPO tipo) {
@@ -51,7 +51,7 @@ public class Atraccion implements Comparable<Atraccion>{
 
     @Override
     public String toString() {
-        return "Atraccion[" + "nombre: " + nombre + ", costo: " + costo + ", tiempo: " + tiempo + ", cupo: " + cupo + ", tipo: " + tipo + "]\n";
+        return "Nombre: " + nombre + ", costo: " + costo + ", tiempo: " + tiempo + ", cupo: " + cupo + ", tipo: " + tipo ;
     }
 
     @Override

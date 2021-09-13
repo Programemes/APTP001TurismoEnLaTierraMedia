@@ -1,13 +1,13 @@
 package testeos;
 
-import general.Atraccion;
-import general.ENUMTIPO;
-import general.Sistema;
-import general.Usuario;
+import sugeribles.atracciones.Atraccion;
+import sugeribles.atracciones.ENUMTIPO;
+import sistema.Sistema;
+import usuarios.Usuario;
 import org.junit.Test;
-import promociones.IPromocion;
-import promociones.PromocionAbsoluta;
-import promociones.PromocionAxB;
+import sugeribles.promociones.IPromocion;
+import sugeribles.promociones.PromocionAbsoluta;
+import sugeribles.promociones.PromocionAxB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class Tests {
     public void testSistema() throws Exception {
         List<Usuario> usuarioList = new ArrayList<>();
         usuarioList.add(new Usuario(ENUMTIPO.PAISAJE, 7, 10));
-        usuarioList.add(new Usuario(ENUMTIPO.ADVENTURA, 9, 233));
+        usuarioList.add(new Usuario(ENUMTIPO.ADVENTURA, 9, 15));
         usuarioList.add(new Usuario(ENUMTIPO.PAISAJE, 100, 123));
         Atraccion[] atracciones = new Atraccion[5];
         atracciones[0] = new Atraccion("Atraccion prueba 1", 12, 3, 5, ENUMTIPO.PAISAJE);
@@ -38,8 +38,13 @@ public class Tests {
         promociones[0] = new PromocionAbsoluta(atracciones[2], atracciones[3], 6);
         promociones[1] = new PromocionAxB(atracciones[0], atracciones[1], atracciones[4]);
         Sistema sistema = new Sistema(usuarioList, atracciones, promociones);
-        sistema.crearItinerario(usuarioList.get(0));
+        int i = 0;
+        for (Usuario usuario : usuarioList) {
+            System.out.println("Usuario numero " + i++ + "\n");
+            sistema.sugerir(usuario);
+        }
         assertNotEquals(7, usuarioList.get(0).getPresupuesto());
+
 
     }
 }

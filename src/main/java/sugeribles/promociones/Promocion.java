@@ -1,6 +1,6 @@
-package promociones;
+package sugeribles.promociones;
 
-import general.Atraccion;
+import sugeribles.atracciones.Atraccion;
 
 public abstract class Promocion {
     private final Atraccion atraccionA;
@@ -17,5 +17,13 @@ public abstract class Promocion {
 
     public Atraccion getAtraccionB() {
         return atraccionB;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().toString() + "[" +
+                "atraccionA: " + atraccionA +
+                ", atraccionB: " + atraccionB +
+                ']';
     }
 }

@@ -1,4 +1,4 @@
-package general;
+package sugeribles.atracciones;
 
 public enum ENUMTIPO {
     ADVENTURA("Adventura"),

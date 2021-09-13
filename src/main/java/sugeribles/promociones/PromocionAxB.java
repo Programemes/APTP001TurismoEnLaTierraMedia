@@ -1,6 +1,6 @@
-package promociones;
+package sugeribles.promociones;
 
-import general.Atraccion;
+import sugeribles.atracciones.Atraccion;
 
 public class PromocionAxB extends Promocion implements IPromocion {
     private final Atraccion atraccionRegalo;
