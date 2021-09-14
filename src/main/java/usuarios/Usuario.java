@@ -4,22 +4,25 @@ package usuarios;
  import sugeribles.atracciones.Atraccion;
  import sugeribles.atracciones.ENUMTIPO;
 
- import java.util.ArrayList;
- import java.util.Collections;
- import java.util.List;
- import java.util.Scanner;
+ import java.util.*;
 
 public class Usuario {
+    private final int DNI;
     private final ENUMTIPO tipoFavorito;
     private int presupuesto;
     private double tiempoDisponible;
     private final List<Atraccion> atracciones;
 
-    public Usuario(ENUMTIPO tipoFavorito, int presupuesto, double tiempoDisponible) {
+    public Usuario(int DNI, ENUMTIPO tipoFavorito, int presupuesto, double tiempoDisponible) {
+        this.DNI = DNI;
         this.tipoFavorito = tipoFavorito;
         this.presupuesto = presupuesto;
         this.tiempoDisponible = tiempoDisponible;
         atracciones = new ArrayList<>();
+    }
+
+    public int getDNI() {
+        return DNI;
     }
 
     public ENUMTIPO getTipoFavorito() {
@@ -77,5 +80,18 @@ public class Usuario {
 
     public List<Atraccion> getAtracciones() {
         return atracciones;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuario usuario = (Usuario) o;
+        return DNI == usuario.DNI;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(DNI);
     }
 }

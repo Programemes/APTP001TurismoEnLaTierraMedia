@@ -23,6 +23,7 @@ public class Sugerencia {
     public IPromocion getPromocion() {
         return promocion;
     }
+
     public int getTotal() {
         return total;
     }

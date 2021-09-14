@@ -1,4 +1,3 @@
-// Alumno: Morales, Gabriel.
 package sistema;
 
 import java.io.BufferedReader;
@@ -27,7 +26,7 @@ public class LectorCSV {
             }
             csvReader.close();
         }
-        
+
     }
 
     public List<String> getListaCSV() {
@@ -39,4 +38,3 @@ public class LectorCSV {
         return listaCSV.toString();
     }
 }
-// Alumno: Morales, Gabriel.

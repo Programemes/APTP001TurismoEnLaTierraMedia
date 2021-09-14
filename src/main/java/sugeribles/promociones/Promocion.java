@@ -2,6 +2,8 @@ package sugeribles.promociones;
 
 import sugeribles.atracciones.Atraccion;
 
+import java.util.Objects;
+
 public abstract class Promocion {
     private final Atraccion atraccionA;
     private final Atraccion atraccionB;
@@ -25,5 +27,18 @@ public abstract class Promocion {
                 "atraccionA: " + atraccionA +
                 ", atraccionB: " + atraccionB +
                 ']';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Promocion promocion = (Promocion) o;
+        return Objects.equals(atraccionA, promocion.atraccionA) && Objects.equals(atraccionB, promocion.atraccionB);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(atraccionA, atraccionB);
     }
 }
