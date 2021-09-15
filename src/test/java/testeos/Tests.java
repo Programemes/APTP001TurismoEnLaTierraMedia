@@ -19,10 +19,26 @@ import static org.junit.Assert.*;
 
 public class Tests {
     @Test
-    public void testConstructor(){
-        Atraccion atraccion = new Atraccion("asd",2,3,4, ENUMTIPO.PAISAJE);
-        System.out.println(atraccion);
+    public void testConstructorAtraccion(){
+        Atraccion atraccion = new Atraccion("Atraccion prueba 1",2,3,4, ENUMTIPO.PAISAJE);
         assertNotNull(atraccion);
+    }
+
+    @Test
+    public void testConstructorPromocion() throws Exception {
+        Atraccion atraccionA = new Atraccion("Atraccion prueba 1",2,3,4, ENUMTIPO.PAISAJE);
+        Atraccion atraccionB = new Atraccion("Atraccion prueba 2",7,3,4, ENUMTIPO.PAISAJE);
+        IPromocion promocion = new PromocionAbsoluta(atraccionA, atraccionB, 5);
+        assertNotNull(promocion);
+        assertEquals(5, (int) promocion.retornarPromocion());
+    }
+
+    @Test
+    public void testConstructorUsuario() {
+        Usuario usuario = new Usuario(12345678, ENUMTIPO.PAISAJE, 5, 10);
+        assertNotNull(usuario);
+        assertEquals(5, usuario.getDineroDisponible());
+        assertEquals(10, usuario.getTiempoDisponible(), 0);
     }
 
     @Test
@@ -84,5 +100,6 @@ public class Tests {
     @Test
     public void testExportar() throws Exception {
         Sistema sistema = new Sistema("src/main/resources/usuarios.csv", "src/main/resources/atracciones.csv", "src/main/resources/promociones.csv");
+        sistema.exportarUsuarios();
     }
 }
