@@ -1,6 +1,6 @@
 package sugeribles.promociones;
 
-import sugeribles.atracciones.Atraccion;
+import sugeribles.Atraccion;
 
 import java.util.Objects;
 
@@ -8,7 +8,10 @@ public abstract class Promocion {
     private final Atraccion atraccionA;
     private final Atraccion atraccionB;
 
-    public Promocion(Atraccion atraccionA, Atraccion atraccionB) {
+    public Promocion(Atraccion atraccionA, Atraccion atraccionB) throws Exception {
+        if (atraccionA.getTipo() != atraccionB.getTipo()){
+            throw new Exception("Las atracciones no son del mismo tipo.");
+        }
         this.atraccionA = atraccionA;
         this.atraccionB = atraccionB;
     }

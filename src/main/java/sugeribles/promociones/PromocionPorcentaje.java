@@ -1,6 +1,6 @@
 package sugeribles.promociones;
 
-import sugeribles.atracciones.Atraccion;
+import sugeribles.Atraccion;
 
 public class PromocionPorcentaje extends Promocion implements IPromocion {
     private final double porcentaje;

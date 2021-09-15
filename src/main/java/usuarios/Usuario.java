@@ -1,23 +1,29 @@
 package usuarios;
 
  import sugeribles.Sugerencia;
- import sugeribles.atracciones.Atraccion;
- import sugeribles.atracciones.ENUMTIPO;
+ import sugeribles.Atraccion;
+ import Enumeradores.ENUMTIPO;
 
  import java.util.*;
 
 public class Usuario {
     private final int DNI;
     private final ENUMTIPO tipoFavorito;
-    private int presupuesto;
+    private final int dineroInicial;
+    private int dineroDisponible;
+    private final double tiempoInicial;
     private double tiempoDisponible;
     private final List<Atraccion> atracciones;
+    private int costoTotal;
 
-    public Usuario(int DNI, ENUMTIPO tipoFavorito, int presupuesto, double tiempoDisponible) {
+    public Usuario(int DNI, ENUMTIPO tipoFavorito, int dineroInicial, double tiempoDisponible) {
         this.DNI = DNI;
         this.tipoFavorito = tipoFavorito;
-        this.presupuesto = presupuesto;
+        this.dineroInicial = dineroInicial;
+        this.dineroDisponible = dineroInicial;
+        this.tiempoInicial = tiempoDisponible;
         this.tiempoDisponible = tiempoDisponible;
+        costoTotal = 0;
         atracciones = new ArrayList<>();
     }
 
@@ -29,8 +35,8 @@ public class Usuario {
         return tipoFavorito;
     }
 
-    public int getPresupuesto() {
-        return presupuesto;
+    public int getDineroDisponible() {
+        return dineroDisponible;
     }
 
     public double getTiempoDisponible() {
@@ -39,7 +45,7 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "Usuario" + "tipoFavorito=" + tipoFavorito + ", presupuesto=" + presupuesto + ", tiempoDisponible=" + tiempoDisponible + '}';
+        return "Usuario" + "tipoFavorito=" + tipoFavorito + ", presupuesto=" + dineroDisponible + ", tiempoDisponible=" + tiempoDisponible + '}';
     }
 
 
@@ -65,7 +71,12 @@ public class Usuario {
             aceptar = in.nextLine();
         }while (!aceptar.equalsIgnoreCase("Si") && !aceptar.equalsIgnoreCase("No"));
         if (aceptar.equalsIgnoreCase("Si")){
-            presupuesto -= sugerencia.getTotal();
+            dineroDisponible -= sugerencia.getTotal();
+            for (Atraccion atraccion : sugerencia.getAtracciones()) {
+                tiempoDisponible -= atraccion.getTiempo();
+                atraccion.ocuparUnLugar();
+            }
+            costoTotal += sugerencia.getTotal();
             Collections.addAll(atracciones, sugerencia.getAtracciones());
         }
     }
@@ -93,5 +104,17 @@ public class Usuario {
     @Override
     public int hashCode() {
         return Objects.hash(DNI);
+    }
+
+    public int getCostoTotal() {
+        return costoTotal;
+    }
+
+    public int getDineroInicial() {
+        return dineroInicial;
+    }
+
+    public double getTiempoInicial() {
+        return tiempoInicial;
     }
 }

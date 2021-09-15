@@ -1,6 +1,5 @@
 package sugeribles;
 
-import sugeribles.atracciones.Atraccion;
 import sugeribles.promociones.IPromocion;
 
 import java.util.Arrays;
