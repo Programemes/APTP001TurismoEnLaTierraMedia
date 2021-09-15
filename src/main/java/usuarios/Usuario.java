@@ -2,7 +2,7 @@ package usuarios;
 
  import sugeribles.Sugerencia;
  import sugeribles.Atraccion;
- import Enumeradores.ENUMTIPO;
+ import enumeradores.ENUMTIPO;
 
  import java.util.*;
 

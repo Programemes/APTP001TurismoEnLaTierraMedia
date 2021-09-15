@@ -1,4 +1,4 @@
-package Enumeradores;
+package enumeradores;
 
 public enum ENUMTIPO {
     ADVENTURA("Adventura"),

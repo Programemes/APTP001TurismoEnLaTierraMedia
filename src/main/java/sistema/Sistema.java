@@ -1,7 +1,9 @@
 package sistema;
 
+import comparadores.ComparadorAtraccion;
+import comparadores.ComparadorPromocion;
 import sugeribles.Atraccion;
-import Enumeradores.ENUMTIPO;
+import enumeradores.ENUMTIPO;
 import sugeribles.Sugerencia;
 import sugeribles.promociones.IPromocion;
 import sugeribles.promociones.PromocionAbsoluta;
@@ -30,6 +32,8 @@ public class Sistema {
         agregarUsuariosCSV(new LectorCSV(directorioUsuariosCSV).getListaCSV());
         agregarAtraccionesCSV(new LectorCSV(directorioAtraccionesCSV).getListaCSV());
         agregarPromocionesCSV(new LectorCSV(directorioPromocionesCSV).getListaCSV());
+        atracciones.sort(new ComparadorAtraccion());
+        promociones.sort(new ComparadorPromocion());
 
         for (Usuario usuario : usuarios) {
             System.out.println("\n"+"""
@@ -46,6 +50,8 @@ public class Sistema {
         this.usuarios = usuarios;
         this.atracciones = atracciones;
         this.promociones = promociones;
+        this.atracciones.sort(new ComparadorAtraccion());
+        this.promociones.sort(new ComparadorPromocion());
 
         for (Usuario usuario : usuarios) {
             System.out.println("\n"+"""
@@ -148,6 +154,7 @@ public class Sistema {
         int costoActual = 0;
         double tiempoActual = 0;
         Atraccion[] atraccionesTipo = obtenerAtraccionesTipo(user.getTipoFavorito());
+        //Arrays.sort(atraccionesTipo, new ComparadorAtraccion());
 
         for (Atraccion atraccion : atraccionesTipo) {
             if ((atraccion != null) && atraccion.hayEspacio() && (costoActual + atraccion.getCosto() <= user.getDineroDisponible()) && (tiempoActual + atraccion.getTiempo() <= user.getTiempoDisponible())) {

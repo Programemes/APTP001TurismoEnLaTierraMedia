@@ -1,7 +1,9 @@
 package testeos;
 
+import comparadores.ComparadorAtraccion;
+import comparadores.ComparadorPromocion;
 import sugeribles.Atraccion;
-import Enumeradores.ENUMTIPO;
+import enumeradores.ENUMTIPO;
 import sistema.Sistema;
 import sugeribles.promociones.PromocionPorcentaje;
 import usuarios.Usuario;
@@ -44,6 +46,7 @@ public class Tests {
         atraccionList.add(new Atraccion("Atraccion prueba 5", 7, 4, 32, ENUMTIPO.PAISAJE));
         atraccionList.add(new Atraccion("Atraccion prueba 6", 5, 4, 7, ENUMTIPO.DEGUSTACION));
         atraccionList.add(new Atraccion("Atraccion prueba 7", 10, 4, 7, ENUMTIPO.DEGUSTACION));
+        atraccionList.sort(new ComparadorAtraccion());
 
         Sistema sistema = new Sistema("src/main/resources/usuarios.csv", "src/main/resources/atracciones.csv", "src/main/resources/promociones.csv");
         assertEquals(atraccionList, sistema.getAtracciones());
@@ -64,6 +67,7 @@ public class Tests {
         promociones.add(new PromocionAbsoluta(atraccionList.get(2), atraccionList.get(3), 6));
         promociones.add(new PromocionAxB(atraccionList.get(0), atraccionList.get(1), atraccionList.get(4)));
         promociones.add(new PromocionPorcentaje(atraccionList.get(5), atraccionList.get(6), 50));
+        promociones.sort(new ComparadorPromocion());
         Sistema sistema = new Sistema("src/main/resources/usuarios.csv", "src/main/resources/atracciones.csv", "src/main/resources/promociones.csv");
         assertEquals(promociones, sistema.getPromociones());
         sistema.exportarUsuarios();
