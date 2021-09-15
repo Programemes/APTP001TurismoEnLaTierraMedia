@@ -14,9 +14,7 @@ import usuarios.Usuario;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -173,6 +171,11 @@ public class Sistema {
     public boolean agregarUsuario(Usuario user) {
         if (!usuarios.contains(user)){
             usuarios.add(user);
+            System.out.println("\n"+"""
+                    ----------------------------------------------------
+                    ----------------------------------------------------
+                    ----------------------------------------------------""");
+            System.out.println("Usuario DNI numero: " + user.getDNI());
             sugerirPromociones(user);
             sugerirAtracciones(user);
             return true;
@@ -180,9 +183,10 @@ public class Sistema {
         return false;
     }
 
-    public boolean removerUsuario(Usuario user){
-        if (usuarios.remove(user)) {
-            for (Atraccion atraccion : user.getAtracciones()) {
+    public boolean removerUsuario(int DNI){
+        Usuario aux;
+        if ((aux = usuarios.remove(usuarios.indexOf(new Usuario(DNI, ENUMTIPO.ADVENTURA, 0, 0)))) != null) {
+            for (Atraccion atraccion : aux.getAtracciones()) {
                 atraccion.liberarUnLugar();
             }
             return true;
@@ -318,21 +322,78 @@ public class Sistema {
     }
 
     public static void main(String[] args) throws Exception {
-        List<Usuario> usuarioList = new ArrayList<>();
-        usuarioList.add(new Usuario(41456294, ENUMTIPO.PAISAJE, 7, 10));
-        usuarioList.add(new Usuario(43456563, ENUMTIPO.ADVENTURA, 9, 15));
-        usuarioList.add(new Usuario(42456514, ENUMTIPO.PAISAJE, 100, 123));
-        Atraccion[] atracciones = new Atraccion[5];
-        atracciones[0] = new Atraccion("Atraccion prueba 1", 12, 3, 5, ENUMTIPO.PAISAJE);
-        atracciones[1] = new Atraccion("Atraccion prueba 2", 23, 8, 3, ENUMTIPO.PAISAJE);
-        atracciones[2] = new Atraccion("Atraccion prueba 3", 5, 6, 63, ENUMTIPO.ADVENTURA);
-        atracciones[3] = new Atraccion("Atraccion prueba 4", 12, 1, 6, ENUMTIPO.ADVENTURA);
-        atracciones[4] = new Atraccion("Atraccion prueba 5", 7, 4, 32, ENUMTIPO.PAISAJE);
-        IPromocion[] promociones = new IPromocion[2];
-        promociones[0] = new PromocionAbsoluta(atracciones[2], atracciones[3], 6);
-        promociones[1] = new PromocionAxB(atracciones[0], atracciones[1], atracciones[4]);
-        Sistema sistema = new Sistema(usuarioList, List.of(atracciones), Arrays.stream(promociones).toList());
-        sistema.exportarUsuarios();
+        Sistema sistema = new Sistema("src/main/resources/usuarios.csv", "src/main/resources/atracciones.csv", "src/main/resources/promociones.csv");
+        boolean salir = false;
+        do{
+            Scanner scannerInt = new Scanner(System.in);
+            int eleccion;
+            do {
+                System.out.println("""
+                        Intoduzca una de las opciones a continuacion para continuar.
+                        1- Agregar un usuario.
+                        2- Remover un usuario.
+                        3- Exportar los usuarios.
+                        4- Salir del sistema.""");
+
+                eleccion = scannerInt.nextInt();
+            }while (eleccion < 1 || eleccion > 4);
+
+            switch (eleccion){
+                case 1: {
+                    Scanner scannerString = new Scanner(System.in);
+                    int tempDNI;
+                    int tempMonedas;
+                    double tempTiempo;
+
+                    do{
+                        System.out.print("Ingrese el DNI: ");
+                        tempDNI = scannerInt.nextInt();
+                    }while (tempDNI < 0);
+
+                    if (sistema.getUsuarios().contains(new Usuario(tempDNI, ENUMTIPO.ADVENTURA, 0 ,0))){
+                        System.out.println("Ya existe un usuario con este DNI");
+                        break;
+                    }
+
+                    do {
+                        System.out.print("\nIngrese las monedas del usuario: ");
+                        tempMonedas = scannerInt.nextInt();
+                    }while (tempMonedas < 0);
+
+                    do{
+                        System.out.print("\nIngrese el tiempo disponible del usuario: ");
+                        tempTiempo = scannerInt.nextDouble();
+                    }while(tempTiempo < 0);
+
+                    String tempTipo;
+                    do {
+                        System.out.print("\nIngrese el tipo favorito del usuario (Adventura, Degustacion o Paisaje.): ");
+                        tempTipo = scannerString.nextLine();
+                    }while (!tempTipo.equalsIgnoreCase("Adventura") && !tempTipo.equalsIgnoreCase("Degustacion") && !tempTipo.equalsIgnoreCase("Paisaje"));
+
+                    sistema.agregarUsuario(new Usuario(tempDNI, ENUMTIPO.valueOf(tempTipo.toUpperCase()), tempMonedas, tempTiempo));
+                    break;
+                }
+                case 2: {
+                    System.out.print("Ingrese el DNI del usuario a remover: ");
+                    if (sistema.removerUsuario(scannerInt.nextInt())){
+                        System.out.println("\nUsuario removido con exito.");
+                    }else{
+                        System.out.println("\nEl usuario con ese DNI no existe.");
+                    }
+                    break;
+                }
+                case 3: {
+                    sistema.exportarUsuarios();
+                    System.out.println("Usuarios exportados.");
+                    break;
+                }
+                case 4: {
+                    salir = true;
+                    break;
+                }
+            }
+        }while(!salir);
     }
 
     public List<Usuario> getUsuarios() {
