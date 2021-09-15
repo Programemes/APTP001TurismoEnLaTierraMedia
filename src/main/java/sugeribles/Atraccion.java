@@ -1,6 +1,6 @@
 package sugeribles;
 
-import Enumeradores.ENUMTIPO;
+import enumeradores.ENUMTIPO;
 
 import java.util.Objects;
 
@@ -25,32 +25,16 @@ public class Atraccion implements Comparable<Atraccion> {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public int getCosto() {
         return costo;
-    }
-
-    public void setCosto(int costo) {
-        this.costo = costo;
     }
 
     public double getTiempo() {
         return tiempo;
     }
 
-    public int getCupo() {
-        return cupo;
-    }
-
     public ENUMTIPO getTipo() {
         return tipo;
-    }
-
-    public void setTipo(ENUMTIPO tipo) {
-        this.tipo = tipo;
     }
 
     @Override

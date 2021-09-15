@@ -2,8 +2,6 @@ package sugeribles;
 
 import sugeribles.promociones.IPromocion;
 
-import java.util.Arrays;
-
 public class Sugerencia {
     private final Atraccion[] atracciones;
     private final IPromocion promocion;
@@ -25,14 +23,5 @@ public class Sugerencia {
 
     public int getTotal() {
         return total;
-    }
-
-    @Override
-    public String toString() {
-        return "Itinerario [" +
-                "atracciones: " + Arrays.toString(atracciones) +
-                ", promocion :" + promocion +
-                ", total: " + total +
-                ']';
     }
 }
