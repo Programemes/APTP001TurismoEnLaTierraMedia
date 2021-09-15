@@ -48,7 +48,6 @@ public class Usuario {
         return "Usuario" + "tipoFavorito=" + tipoFavorito + ", presupuesto=" + dineroDisponible + ", tiempoDisponible=" + tiempoDisponible + '}';
     }
 
-
     public void recibirSugerencia(Sugerencia sugerencia) {
         Scanner in = new Scanner(System.in);
         System.out.println("\n\nSe ha hecho la siguiente sugerencia:\n");

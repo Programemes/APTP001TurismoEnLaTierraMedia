@@ -107,6 +107,7 @@ public class Sistema {
                     }
                 }
             }
+            listaAtracciones.clear();
         }
 
         //Ofrezco promociones pero que no son del mismo tipo.
@@ -145,6 +146,7 @@ public class Sistema {
                     }
                 }
             }
+            listaAtracciones.clear();
         }
     }
 
@@ -152,17 +154,16 @@ public class Sistema {
         int costoActual = 0;
         double tiempoActual = 0;
         Atraccion[] atraccionesTipo = obtenerAtraccionesTipo(user.getTipoFavorito());
-        //Arrays.sort(atraccionesTipo, new ComparadorAtraccion());
 
         for (Atraccion atraccion : atraccionesTipo) {
-            if ((atraccion != null) && atraccion.hayEspacio() && (costoActual + atraccion.getCosto() <= user.getDineroDisponible()) && (tiempoActual + atraccion.getTiempo() <= user.getTiempoDisponible())) {
+            if ((atraccion != null) && !user.getAtracciones().contains(atraccion) && atraccion.hayEspacio() && (costoActual + atraccion.getCosto() <= user.getDineroDisponible()) && (tiempoActual + atraccion.getTiempo() <= user.getTiempoDisponible())) {
                 user.recibirSugerencia(new Sugerencia(new Atraccion[]{atraccion}, null, atraccion.getCosto()));
             }
         }
 
         //Incluyo las atracciones que no son del mismo tipo
         for (Atraccion atraccion : atracciones) {
-            if ((atraccion != null) && atraccion.hayEspacio() && (costoActual + atraccion.getCosto() <= user.getDineroDisponible()) && (tiempoActual + atraccion.getTiempo() <= user.getTiempoDisponible())) {
+            if ((atraccion != null) && !user.getAtracciones().contains(atraccion) && atraccion.hayEspacio() && (costoActual + atraccion.getCosto() <= user.getDineroDisponible()) && (tiempoActual + atraccion.getTiempo() <= user.getTiempoDisponible())) {
                 user.recibirSugerencia(new Sugerencia(new Atraccion[]{atraccion}, null, atraccion.getCosto()));
             }
         }
@@ -184,8 +185,8 @@ public class Sistema {
     }
 
     public boolean removerUsuario(int DNI){
-        Usuario aux;
-        if ((aux = usuarios.remove(usuarios.indexOf(new Usuario(DNI, ENUMTIPO.ADVENTURA, 0, 0)))) != null) {
+        if (usuarios.contains(new Usuario(DNI, ENUMTIPO.ADVENTURA, 0, 0))) {
+            Usuario aux = usuarios.remove(usuarios.indexOf(new Usuario(DNI, ENUMTIPO.ADVENTURA, 0, 0)));
             for (Atraccion atraccion : aux.getAtracciones()) {
                 atraccion.liberarUnLugar();
             }
@@ -328,7 +329,7 @@ public class Sistema {
             Scanner scannerInt = new Scanner(System.in);
             int eleccion;
             do {
-                System.out.println("""
+                System.out.println("\n" + """
                         Intoduzca una de las opciones a continuacion para continuar.
                         1- Agregar un usuario.
                         2- Remover un usuario.
@@ -374,6 +375,7 @@ public class Sistema {
                     sistema.agregarUsuario(new Usuario(tempDNI, ENUMTIPO.valueOf(tempTipo.toUpperCase()), tempMonedas, tempTiempo));
                     break;
                 }
+
                 case 2: {
                     System.out.print("Ingrese el DNI del usuario a remover: ");
                     if (sistema.removerUsuario(scannerInt.nextInt())){
@@ -383,11 +385,13 @@ public class Sistema {
                     }
                     break;
                 }
+
                 case 3: {
                     sistema.exportarUsuarios();
                     System.out.println("Usuarios exportados.");
                     break;
                 }
+
                 case 4: {
                     salir = true;
                     break;
