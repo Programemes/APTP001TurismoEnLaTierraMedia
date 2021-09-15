@@ -1,4 +1,4 @@
-package sugeribles.atracciones;
+package Enumeradores;
 
 public enum ENUMTIPO {
     ADVENTURA("Adventura"),
@@ -9,5 +9,10 @@ public enum ENUMTIPO {
 
     ENUMTIPO(String tipo) {
         this.tipo = tipo;
+    }
+
+    @Override
+    public String toString() {
+        return tipo;
     }
 }

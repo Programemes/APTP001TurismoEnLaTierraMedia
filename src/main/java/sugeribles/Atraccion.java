@@ -1,4 +1,6 @@
-package sugeribles.atracciones;
+package sugeribles;
+
+import Enumeradores.ENUMTIPO;
 
 import java.util.Objects;
 
@@ -7,6 +9,7 @@ public class Atraccion implements Comparable<Atraccion> {
     private int costo;
     private final double tiempo;
     private final int cupo;
+    private int puestosOcupados;
     private ENUMTIPO tipo;
 
     public Atraccion(String nombre, int costo, double tiempo, int cupo, ENUMTIPO tipo) {
@@ -15,6 +18,7 @@ public class Atraccion implements Comparable<Atraccion> {
         this.tiempo = tiempo;
         this.cupo = cupo;
         this.tipo = tipo;
+        puestosOcupados = 0;
     }
 
     public String getNombre() {
@@ -73,5 +77,19 @@ public class Atraccion implements Comparable<Atraccion> {
     @Override
     public int hashCode() {
         return Objects.hash(nombre, costo, tiempo, cupo, tipo);
+    }
+
+    public boolean hayEspacio(){
+        return puestosOcupados < cupo;
+    }
+
+    public void ocuparUnLugar(){
+        puestosOcupados++;
+    }
+
+    public void liberarUnLugar(){
+        if (puestosOcupados > 0){
+            puestosOcupados--;
+        }
     }
 }

@@ -1,7 +1,7 @@
 package sistema;
 
-import sugeribles.atracciones.Atraccion;
-import sugeribles.atracciones.ENUMTIPO;
+import sugeribles.Atraccion;
+import Enumeradores.ENUMTIPO;
 import sugeribles.Sugerencia;
 import sugeribles.promociones.IPromocion;
 import sugeribles.promociones.PromocionAbsoluta;
@@ -9,6 +9,9 @@ import sugeribles.promociones.PromocionAxB;
 import sugeribles.promociones.PromocionPorcentaje;
 import usuarios.Usuario;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,54 +30,76 @@ public class Sistema {
         agregarUsuariosCSV(new LectorCSV(directorioUsuariosCSV).getListaCSV());
         agregarAtraccionesCSV(new LectorCSV(directorioAtraccionesCSV).getListaCSV());
         agregarPromocionesCSV(new LectorCSV(directorioPromocionesCSV).getListaCSV());
+
+        for (Usuario usuario : usuarios) {
+            System.out.println("\n"+"""
+                    ----------------------------------------------------
+                    ----------------------------------------------------
+                    ----------------------------------------------------""");
+            System.out.println("Usuario DNI numero: " + usuario.getDNI());
+            sugerirPromociones(usuario);
+            sugerirAtracciones(usuario);
+        }
     }
 
-    public Sistema(List<Usuario> usuarios, List<Atraccion> atracciones, List<IPromocion> promociones) {
+    public Sistema(List<Usuario> usuarios, List<Atraccion> atracciones, List<IPromocion> promociones) throws IOException {
         this.usuarios = usuarios;
         this.atracciones = atracciones;
         this.promociones = promociones;
+
+        for (Usuario usuario : usuarios) {
+            System.out.println("\n"+"""
+                    ----------------------------------------------------
+                    ----------------------------------------------------
+                    ----------------------------------------------------""");
+            System.out.println("Usuario DNI numero: " + usuario.getDNI());
+            sugerirPromociones(usuario);
+            sugerirAtracciones(usuario);
+        }
+
+        exportarUsuarios();
     }
 
-    public void sugerir(Usuario user) {
-        sugerirPromociones(user);
-        sugerirAtracciones(user);
-    }
-
-    public void sugerirPromociones(Usuario user){
+    private void sugerirPromociones(Usuario user){
         List<Atraccion> listaAtracciones = new ArrayList<>();
         int valorTemporal;
 
         for (IPromocion promocion : promociones) {
-            int costoActual = 0;
-            double tiempoActual = 0;
+            if(promocion.getAtraccionA().hayEspacio() && promocion.getAtraccionB().hayEspacio()) {
+                int costoActual = 0;
+                double tiempoActual = 0;
 
-            if (promocion.getAtraccionA().getTipo() == user.getTipoFavorito()) {
-                if (promocion.getClass() == PromocionAbsoluta.class) {
-                    if ((costoActual + (int) promocion.retornarPromocion() <= user.getPresupuesto()) && (tiempoActual + promocion.getAtraccionA().getTiempo() + promocion.getAtraccionB().getTiempo() <= user.getTiempoDisponible())) {
-                        listaAtracciones.add(promocion.getAtraccionA());
-                        listaAtracciones.add(promocion.getAtraccionB());
-                        costoActual += (int) promocion.retornarPromocion();
-                        user.recibirSugerencia(new Sugerencia(listaAtracciones.toArray(new Atraccion[0]), promocion, costoActual));
+                if (promocion.getAtraccionA().getTipo() == user.getTipoFavorito()) {
+                    if (promocion.getClass() == PromocionAbsoluta.class) {
+                        if ((costoActual + (int) promocion.retornarPromocion() <= user.getDineroDisponible()) && (tiempoActual + promocion.getAtraccionA().getTiempo() + promocion.getAtraccionB().getTiempo() <= user.getTiempoDisponible())) {
+                            listaAtracciones.add(promocion.getAtraccionA());
+                            listaAtracciones.add(promocion.getAtraccionB());
+                            costoActual += (int) promocion.retornarPromocion();
+                            user.recibirSugerencia(new Sugerencia(listaAtracciones.toArray(new Atraccion[0]), promocion, costoActual));
+                        }
                     }
-                }
-                if (promocion.getClass() == PromocionPorcentaje.class) {
-                    valorTemporal = promocion.getAtraccionA().getCosto() + promocion.getAtraccionB().getCosto() - (promocion.getAtraccionA().getCosto() + promocion.getAtraccionB().getCosto() * (int) promocion.retornarPromocion());
-                    if ((costoActual + valorTemporal <= user.getPresupuesto()) && (tiempoActual + promocion.getAtraccionA().getTiempo() + promocion.getAtraccionB().getTiempo() <= user.getTiempoDisponible())) {
-                        listaAtracciones.add(promocion.getAtraccionA());
-                        listaAtracciones.add(promocion.getAtraccionB());
-                        costoActual += valorTemporal;
-                        user.recibirSugerencia(new Sugerencia(listaAtracciones.toArray(new Atraccion[0]), promocion, costoActual));
+                    if (promocion.getClass() == PromocionPorcentaje.class) {
+                        valorTemporal = (int) (promocion.getAtraccionA().getCosto() + promocion.getAtraccionB().getCosto() - ((promocion.getAtraccionA().getCosto() + promocion.getAtraccionB().getCosto()) * ((double)promocion.retornarPromocion() / 100)));
+                        if ((costoActual + valorTemporal <= user.getDineroDisponible()) && (tiempoActual + promocion.getAtraccionA().getTiempo() + promocion.getAtraccionB().getTiempo() <= user.getTiempoDisponible())) {
+                            listaAtracciones.add(promocion.getAtraccionA());
+                            listaAtracciones.add(promocion.getAtraccionB());
+                            costoActual += valorTemporal;
+                            user.recibirSugerencia(new Sugerencia(listaAtracciones.toArray(new Atraccion[0]), promocion, costoActual));
+                        }
                     }
-                }
-                if (promocion.getClass() == PromocionAxB.class) {
-                    valorTemporal = promocion.getAtraccionA().getCosto() + promocion.getAtraccionB().getCosto();
-                    Atraccion atraccionAux = (Atraccion) promocion.retornarPromocion();
-                    if ((costoActual + valorTemporal <= user.getPresupuesto()) && (tiempoActual + promocion.getAtraccionA().getTiempo() + promocion.getAtraccionB().getTiempo() + atraccionAux.getTiempo() <= user.getTiempoDisponible())) {
-                        listaAtracciones.add(promocion.getAtraccionA());
-                        listaAtracciones.add(promocion.getAtraccionB());
-                        listaAtracciones.add(atraccionAux);
-                        costoActual += valorTemporal;
-                        user.recibirSugerencia(new Sugerencia(listaAtracciones.toArray(new Atraccion[0]), promocion, costoActual));
+                    if (promocion.getClass() == PromocionAxB.class) {
+                        Atraccion atraccionAux = (Atraccion) promocion.retornarPromocion();
+                        if(atraccionAux.hayEspacio()) {
+                            valorTemporal = promocion.getAtraccionA().getCosto() + promocion.getAtraccionB().getCosto();
+
+                            if ((costoActual + valorTemporal <= user.getDineroDisponible()) && (tiempoActual + promocion.getAtraccionA().getTiempo() + promocion.getAtraccionB().getTiempo() + atraccionAux.getTiempo() <= user.getTiempoDisponible())) {
+                                listaAtracciones.add(promocion.getAtraccionA());
+                                listaAtracciones.add(promocion.getAtraccionB());
+                                listaAtracciones.add(atraccionAux);
+                                costoActual += valorTemporal;
+                                user.recibirSugerencia(new Sugerencia(listaAtracciones.toArray(new Atraccion[0]), promocion, costoActual));
+                            }
+                        }
                     }
                 }
             }
@@ -88,7 +113,7 @@ public class Sistema {
 
             if (promocion.getAtraccionA().getTipo() != user.getTipoFavorito()) {
                 if (promocion.getClass() == PromocionAbsoluta.class) {
-                    if ((costoActual + (int) promocion.retornarPromocion() <= user.getPresupuesto()) && (tiempoActual + promocion.getAtraccionA().getTiempo() + promocion.getAtraccionB().getTiempo() <= user.getTiempoDisponible())) {
+                    if ((costoActual + (int) promocion.retornarPromocion() <= user.getDineroDisponible()) && (tiempoActual + promocion.getAtraccionA().getTiempo() + promocion.getAtraccionB().getTiempo() <= user.getTiempoDisponible())) {
                         listaAtracciones.add(promocion.getAtraccionA());
                         listaAtracciones.add(promocion.getAtraccionB());
                         costoActual += (int) promocion.retornarPromocion();
@@ -96,8 +121,8 @@ public class Sistema {
                     }
                 }
                 if (promocion.getClass() == PromocionPorcentaje.class) {
-                    valorTemporal = promocion.getAtraccionA().getCosto() + promocion.getAtraccionB().getCosto() - (promocion.getAtraccionA().getCosto() + promocion.getAtraccionB().getCosto() * (int) promocion.retornarPromocion());
-                    if ((costoActual + valorTemporal <= user.getPresupuesto()) && (tiempoActual + promocion.getAtraccionA().getTiempo() + promocion.getAtraccionB().getTiempo() <= user.getTiempoDisponible())) {
+                    valorTemporal = (int) (promocion.getAtraccionA().getCosto() + promocion.getAtraccionB().getCosto() - ((promocion.getAtraccionA().getCosto() + promocion.getAtraccionB().getCosto()) * ((double)promocion.retornarPromocion() / 100)));
+                    if ((costoActual + valorTemporal <= user.getDineroDisponible()) && (tiempoActual + promocion.getAtraccionA().getTiempo() + promocion.getAtraccionB().getTiempo() <= user.getTiempoDisponible())) {
                         listaAtracciones.add(promocion.getAtraccionA());
                         listaAtracciones.add(promocion.getAtraccionB());
                         costoActual += valorTemporal;
@@ -107,7 +132,7 @@ public class Sistema {
                 if (promocion.getClass() == PromocionAxB.class) {
                     valorTemporal = promocion.getAtraccionA().getCosto() + promocion.getAtraccionB().getCosto();
                     Atraccion atraccionAux = (Atraccion) promocion.retornarPromocion();
-                    if ((costoActual + valorTemporal <= user.getPresupuesto()) && (tiempoActual + promocion.getAtraccionA().getTiempo() + promocion.getAtraccionB().getTiempo() + atraccionAux.getTiempo() <= user.getTiempoDisponible())) {
+                    if ((costoActual + valorTemporal <= user.getDineroDisponible()) && (tiempoActual + promocion.getAtraccionA().getTiempo() + promocion.getAtraccionB().getTiempo() + atraccionAux.getTiempo() <= user.getTiempoDisponible())) {
                         listaAtracciones.add(promocion.getAtraccionA());
                         listaAtracciones.add(promocion.getAtraccionB());
                         listaAtracciones.add(atraccionAux);
@@ -125,32 +150,37 @@ public class Sistema {
         Atraccion[] atraccionesTipo = obtenerAtraccionesTipo(user.getTipoFavorito());
 
         for (Atraccion atraccion : atraccionesTipo) {
-            if ((atraccion != null) && (costoActual + atraccion.getCosto() <= user.getPresupuesto()) && (tiempoActual + atraccion.getTiempo() <= user.getTiempoDisponible())) {
+            if ((atraccion != null) && atraccion.hayEspacio() && (costoActual + atraccion.getCosto() <= user.getDineroDisponible()) && (tiempoActual + atraccion.getTiempo() <= user.getTiempoDisponible())) {
                 user.recibirSugerencia(new Sugerencia(new Atraccion[]{atraccion}, null, atraccion.getCosto()));
             }
         }
 
         //Incluyo las atracciones que no son del mismo tipo
         for (Atraccion atraccion : atracciones) {
-            if ((atraccion != null) && (costoActual + atraccion.getCosto() <= user.getPresupuesto()) && (tiempoActual + atraccion.getTiempo() <= user.getTiempoDisponible())) {
+            if ((atraccion != null) && atraccion.hayEspacio() && (costoActual + atraccion.getCosto() <= user.getDineroDisponible()) && (tiempoActual + atraccion.getTiempo() <= user.getTiempoDisponible())) {
                 user.recibirSugerencia(new Sugerencia(new Atraccion[]{atraccion}, null, atraccion.getCosto()));
             }
         }
     }
 
-    public void agregarUsuario(Usuario user) throws Exception {
-        if (existeUsuario(user)){
-            throw new Exception("Este usuario ya existe");
+    public boolean agregarUsuario(Usuario user) {
+        if (!usuarios.contains(user)){
+            usuarios.add(user);
+            sugerirPromociones(user);
+            sugerirAtracciones(user);
+            return true;
         }
-        usuarios.add(user);
+        return false;
     }
 
-    private boolean existeUsuario(Usuario user){
-        return usuarios.contains(user);
-    }
-
-    public void removerUsuario(Usuario user){
-        usuarios.remove(user);
+    public boolean removerUsuario(Usuario user){
+        if (usuarios.remove(user)) {
+            for (Atraccion atraccion : user.getAtracciones()) {
+                atraccion.liberarUnLugar();
+            }
+            return true;
+        }
+        return false;
     }
 
     private Atraccion[] obtenerAtraccionesTipo(ENUMTIPO tipo){
@@ -164,7 +194,7 @@ public class Sistema {
     }
 
     public void agregarUsuariosCSV(List<String> listaCSV) throws Exception {
-        Pattern patronRegex = Pattern.compile("(\\d*), ?(.*), ?(\\d*), ?(\\d*)");
+        Pattern patronRegex = Pattern.compile("(\\d*), ?(.*), ?(\\d*), ?(\\d*(?:.\\d*)?)");
         for (String fila : listaCSV) {
             Matcher matcher = patronRegex.matcher(fila);
             if (matcher.matches()) {
@@ -176,10 +206,8 @@ public class Sistema {
                     throw new Exception("El tiempo disponible es menor a 1 hora.");
                 }
 
-                for (Usuario usuario : usuarios) {
-                    if (usuario.getDNI() == Integer.parseInt(matcher.group(1))) {
-                        throw new Exception("Ya existe este usuario.");
-                    }
+                if(usuarios.contains(new Usuario(Integer.parseInt(matcher.group(1)), ENUMTIPO.valueOf(matcher.group(2).toUpperCase()), Integer.parseInt(matcher.group(3)), Double.parseDouble(matcher.group(4))))){
+                    throw new Exception("El usuario ya existe.");
                 }
                 usuarios.add(new Usuario(Integer.parseInt(matcher.group(1)), ENUMTIPO.valueOf(matcher.group(2).toUpperCase()), Integer.parseInt(matcher.group(3)), Double.parseDouble(matcher.group(4))));
             }
@@ -203,7 +231,7 @@ public class Sistema {
     }
 
     public void agregarPromocionesCSV(List<String> listaCSV) throws Exception {
-        Pattern patronRegex = Pattern.compile("(.*), ?(.*), ?(.*), ?(\\d*), ?(\\d*), ?(\\d*)");
+        Pattern patronRegex = Pattern.compile("(.*), ?(.*), ?(.*), ?(\\d*), ?(\\d*)");
         for (String fila : listaCSV) {
             Matcher matcher = patronRegex.matcher(fila);
             if (matcher.matches()) {
@@ -268,6 +296,20 @@ public class Sistema {
         }
     }
 
+    public void exportarUsuarios() throws IOException {
+        PrintWriter printWriter = new PrintWriter(new FileWriter("usuariosExportados.txt"));
+        for (Usuario usuario : usuarios) {
+            double tiempoOcupado = 0;
+            for (Atraccion atraccion : usuario.getAtracciones()) {
+                tiempoOcupado += atraccion.getTiempo();
+            }
+            printWriter.println("El usuario DNI: " + usuario.getDNI() + ", le gustan las atracciones del tipo de " + usuario.getTipoFavorito().toString() + ", ingresó con "
+                                + usuario.getDineroInicial() + " monedas y " + usuario.getTiempoInicial() + " horas inicialmente, se retiró con " + usuario.getDineroDisponible() + " monedas disponibles y " + usuario.getTiempoDisponible()
+                                + " horas disponibles. Gastó " + usuario.getCostoTotal() + " monedas y estuvo " + tiempoOcupado + " horas en atracciones.");
+        }
+        printWriter.close();
+    }
+
     public static void main(String[] args) throws Exception {
         List<Usuario> usuarioList = new ArrayList<>();
         usuarioList.add(new Usuario(41456294, ENUMTIPO.PAISAJE, 7, 10));
@@ -283,15 +325,7 @@ public class Sistema {
         promociones[0] = new PromocionAbsoluta(atracciones[2], atracciones[3], 6);
         promociones[1] = new PromocionAxB(atracciones[0], atracciones[1], atracciones[4]);
         Sistema sistema = new Sistema(usuarioList, List.of(atracciones), Arrays.stream(promociones).toList());
-        int i = 0;
-        for (Usuario usuario : usuarioList) {
-            System.out.println("""
-                    ----------------------------------------------------
-                    ----------------------------------------------------
-                    ----------------------------------------------------""");
-            System.out.println("Usuario numero " + i++);
-            sistema.sugerir(usuario);
-        }
+        sistema.exportarUsuarios();
     }
 
     public List<Usuario> getUsuarios() {
