@@ -8,6 +8,6 @@ public class ComparadorAtraccion implements Comparator<Atraccion> {
 
     @Override
     public int compare(Atraccion atraccionA, Atraccion atraccionB) {
-        return (int) Math.signum(atraccionA.compareTo(atraccionB));
+        return (int) Math.signum(atraccionB.compareTo(atraccionA));
     }
 }

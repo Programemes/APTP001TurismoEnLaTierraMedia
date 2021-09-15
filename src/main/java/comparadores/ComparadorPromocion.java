@@ -8,6 +8,6 @@ public class ComparadorPromocion implements Comparator<IPromocion> {
 
     @Override
     public int compare(IPromocion promocionA, IPromocion promocionB) {
-        return (int) Math.signum(promocionA.compareTo(promocionB));
+        return (int) Math.signum(promocionB.compareTo(promocionA));
     }
 }
