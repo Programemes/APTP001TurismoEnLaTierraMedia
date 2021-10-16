@@ -34,10 +34,9 @@ public class Sistema {
         promociones.sort(new ComparadorPromocion());
 
         for (Usuario usuario : usuarios) {
-            System.out.println("\n"+"""
-                    ----------------------------------------------------
-                    ----------------------------------------------------
-                    ----------------------------------------------------""");
+            System.out.println("\n"+"----------------------------------------------------"
+                    +"----------------------------------------------------"
+                    +"----------------------------------------------------");
             System.out.println("Usuario DNI numero: " + usuario.getDNI());
             sugerirPromociones(usuario);
             sugerirAtracciones(usuario);
@@ -52,10 +51,9 @@ public class Sistema {
         this.promociones.sort(new ComparadorPromocion());
 
         for (Usuario usuario : usuarios) {
-            System.out.println("\n"+"""
-                    ----------------------------------------------------
-                    ----------------------------------------------------
-                    ----------------------------------------------------""");
+            System.out.println("\n"+"----------------------------------------------------"
+                    +"----------------------------------------------------"
+                    +"----------------------------------------------------");
             System.out.println("Usuario DNI numero: " + usuario.getDNI());
             sugerirPromociones(usuario);
             sugerirAtracciones(usuario);
@@ -172,10 +170,9 @@ public class Sistema {
     public boolean agregarUsuario(Usuario user) {
         if (!usuarios.contains(user)){
             usuarios.add(user);
-            System.out.println("\n"+"""
-                    ----------------------------------------------------
-                    ----------------------------------------------------
-                    ----------------------------------------------------""");
+            System.out.println("\n"+"----------------------------------------------------"
+                    +"----------------------------------------------------"
+                    +"----------------------------------------------------");
             System.out.println("Usuario DNI numero: " + user.getDNI());
             sugerirPromociones(user);
             sugerirAtracciones(user);
@@ -329,12 +326,12 @@ public class Sistema {
             Scanner scannerInt = new Scanner(System.in);
             int eleccion;
             do {
-                System.out.println("\n" + """
-                        Intoduzca una de las opciones a continuacion para continuar.
-                        1- Agregar un usuario.
-                        2- Remover un usuario.
-                        3- Exportar los usuarios.
-                        4- Salir del sistema.""");
+                System.out.println("\n"
+                        + "Intoduzca una de las opciones a continuacion para continuar."
+                        + "1- Agregar un usuario."
+                        + "2- Remover un usuario."
+                        + "3- Exportar los usuarios."
+                        + "4- Salir del sistema.");
 
                 eleccion = scannerInt.nextInt();
             }while (eleccion < 1 || eleccion > 4);
